@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SauceDemo QA Automation — Dashboard</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, Arial, sans-serif; background: #f4f6f8; margin: 0; padding: 30px; color: #222; }
+  h1 { color: #1a4d7c; margin-bottom: 4px; }
+  .subtitle { color: #666; margin-bottom: 30px; }
+  .cards { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 30px; }
+  .card { background: white; border-radius: 10px; padding: 20px 26px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); min-width: 140px; }
+  .card .num { font-size: 32px; font-weight: 700; }
+  .card .label { color: #666; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .pass { color: #1a7f37; }
+  .fail { color: #cf222e; }
+  .total { color: #1a4d7c; }
+  table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); margin-bottom: 30px; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid #eee; font-size: 14px; }
+  th { background: #1a4d7c; color: white; }
+  tr:last-child td { border-bottom: none; }
+  .status-passed { color: #1a7f37; font-weight: 600; }
+  .status-failed { color: #cf222e; font-weight: 600; }
+  .bar-bg { background: #eee; border-radius: 6px; height: 10px; width: 100%; overflow: hidden; }
+  .bar-fill { background: #1a7f37; height: 100%; }
+  h2 { color: #1a4d7c; margin-top: 40px; }
+  .note { color: #888; font-size: 13px; margin-top: 30px; }
+</style>
+</head>
+<body>
+
+<h1>SauceDemo QA Automation Dashboard</h1>
+<div class="subtitle">Generated from live Playwright test results — SauceDemo, 6 user accounts, 3 browsers</div>
+
+<div class="cards" id="summaryCards"></div>
+
+<div class="bar-bg" style="margin-bottom:30px;"><div class="bar-fill" id="passBar"></div></div>
+
+<h2>Results by User Account</h2>
+<table id="userTable">
+  <thead><tr><th>User Account</th><th>Total</th><th>Passed</th><th>Failed</th></tr></thead>
+  <tbody></tbody>
+</table>
+
+<h2>Results by Browser</h2>
+<table id="browserTable">
+  <thead><tr><th>Browser</th><th>Total</th><th>Passed</th><th>Failed</th></tr></thead>
+  <tbody></tbody>
+</table>
+
+<h2>Confirmed Defects (Failing Tests)</h2>
+<table id="defectTable">
+  <thead><tr><th>Test</th><th>Browser</th><th>Status</th></tr></thead>
+  <tbody></tbody>
+</table>
+
+<div class="note">This dashboard reads directly from Playwright's JSON test-result output (test-results/results.json). Re-run the suite and refresh this page to update.</div>
+
+<script>
+async function loadDashboard() {
+  const res = await fetch('../test-results/results.json');
+  const data = await res.json();
+
+  let total = 0, passed = 0, failed = 0;
+  const byUser = {};
+  const byBrowser = {};
+  const defects = [];
+
+  function walkSuites(suites) {
+    for (const suite of suites) {
+      if (suite.suites) walkSuites(suite.suites);
+      if (suite.specs) {
+        for (const spec of suite.specs) {
+          for (const test of spec.tests) {
+            const browser = test.projectName;
+            const status = test.results[0]?.status || 'unknown';
+            const title = spec.title;
+
+            // Guess user account from the file/suite title
+            const fileTitle = suite.title || '';
+            const user = fileTitle;
+
+            total++;
+            byBrowser[browser] = byBrowser[browser] || { total: 0, passed: 0, failed: 0 };
+            byBrowser[browser].total++;
+            byUser[user] = byUser[user] || { total: 0, passed: 0, failed: 0 };
+            byUser[user].total++;
+
+            if (status === 'passed') {
+              passed++;
+              byBrowser[browser].passed++;
+              byUser[user].passed++;
+            } else if (status === 'failed' || status === 'timedOut') {
+              failed++;
+              byBrowser[browser].failed++;
+              byUser[user].failed++;
+              defects.push({ title, browser, status });
+            }
+          }
+        }
+      }
+    }
+  }
+  walkSuites(data.suites);
+
+  document.getElementById('summaryCards').innerHTML = `
+    <div class="card"><div class="num total">${total}</div><div class="label">Total Tests</div></div>
+    <div class="card"><div class="num pass">${passed}</div><div class="label">Passed</div></div>
+    <div class="card"><div class="num fail">${failed}</div><div class="label">Failed (Known Defects)</div></div>
+  `;
+  document.getElementById('passBar').style.width = total ? `${(passed/total*100).toFixed(0)}%` : '0%';
+
+  const userBody = document.querySelector('#userTable tbody');
+  for (const [user, s] of Object.entries(byUser)) {
+    userBody.innerHTML += `<tr><td>${user}</td><td>${s.total}</td><td class="status-passed">${s.passed}</td><td class="status-failed">${s.failed}</td></tr>`;
+  }
+
+  const browserBody = document.querySelector('#browserTable tbody');
+  for (const [browser, s] of Object.entries(byBrowser)) {
+    browserBody.innerHTML += `<tr><td>${browser}</td><td>${s.total}</td><td class="status-passed">${s.passed}</td><td class="status-failed">${s.failed}</td></tr>`;
+  }
+
+  const defectBody = document.querySelector('#defectTable tbody');
+  for (const d of defects) {
+    defectBody.innerHTML += `<tr><td>${d.title}</td><td>${d.browser}</td><td class="status-failed">${d.status}</td></tr>`;
+  }
+}
+loadDashboard().catch(err => {
+  document.body.innerHTML += `<p style="color:red">Could not load results.json — make sure you've run the test suite at least once, and open this file via a local server (not double-clicked directly).</p>`;
+  console.error(err);
+});
+</script>
+
+</body>
+</html>
