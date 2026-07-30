@@ -26,7 +26,7 @@ test('TC-STD-16: logout ends session and blocks back-navigation', async ({ page 
     await page.goBack();
     await expect(page).toHaveURL('https://www.saucedemo.com/');
   });
-  
+
   test('TC-STD-18: Reset App State should revert Remove button to Add to cart @regression', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
     await inventoryPage.addToCart('sauce-labs-backpack').click();

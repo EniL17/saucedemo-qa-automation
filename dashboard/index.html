@@ -47,15 +47,39 @@
   <tbody></tbody>
 </table>
 
+<h2>Confirmed Defects by Priority</h2>
+<table id="priorityTable">
+  <thead><tr><th>Priority</th><th>Defect Count</th></tr></thead>
+  <tbody></tbody>
+</table>
+
 <h2>Confirmed Defects (Failing Tests)</h2>
 <table id="defectTable">
-  <thead><tr><th>Test</th><th>Browser</th><th>Status</th></tr></thead>
+  <thead><tr><th>Test</th><th>Browser</th><th>Priority</th><th>Status</th></tr></thead>
   <tbody></tbody>
 </table>
 
 <div class="note">This dashboard reads directly from Playwright's JSON test-result output (test-results/results.json). Re-run the suite and refresh this page to update.</div>
 
 <script>
+const priorityMap = {
+  'TC-STD-01': 'High', 'TC-STD-02': 'High', 'TC-STD-03': 'Medium', 'TC-STD-04': 'Medium',
+  'TC-STD-06': 'Medium', 'TC-STD-07': 'Medium', 'TC-STD-08': 'Medium', 'TC-STD-09': 'Medium',
+  'TC-STD-10': 'Medium', 'TC-STD-11': 'High', 'TC-STD-12': 'High', 'TC-STD-13': 'High',
+  'TC-STD-14': 'High', 'TC-STD-16': 'Medium', 'TC-STD-18': 'Medium', 'TC-STD-21': 'Medium',
+  'TC-STD-22': 'Medium', 'TC-LCK-01': 'High', 'TC-PRB-03': 'High', 'TC-PRB-04': 'High',
+  'TC-PRB-05': 'High', 'TC-PRB-06': 'Medium', 'TC-PRB-07': 'High', 'TC-PRB-08': 'High',
+  'TC-PRB-09': 'High', 'TC-PRB-10': 'High', 'TC-PRB-11': 'Medium', 'TC-PFM-01': 'Medium',
+  'TC-PFM-04': 'High', 'TC-PFM-11': 'Medium', 'TC-PFM-12': 'High', 'TC-ERR-02': 'Medium',
+  'TC-ERR-03': 'High', 'TC-ERR-06': 'High', 'TC-ERR-07': 'High', 'TC-ERR-08': 'High',
+  'TC-VIS-10': 'Medium', 'TC-VIS-11': 'High', 'TC-VIS-12': 'Medium', 'TC-VIS-13': 'High',
+};
+
+function extractTestId(title) {
+  const match = title.match(/TC-[A-Z]+-\d+/);
+  return match ? match[0] : null;
+}
+
 async function loadDashboard() {
   const res = await fetch('../test-results/results.json');
   const data = await res.json();
@@ -63,6 +87,7 @@ async function loadDashboard() {
   let total = 0, passed = 0, failed = 0;
   const byUser = {};
   const byBrowser = {};
+  const byPriority = {};
   const defects = [];
 
   function walkSuites(suites) {
@@ -74,8 +99,6 @@ async function loadDashboard() {
             const browser = test.projectName;
             const status = test.results[0]?.status || 'unknown';
             const title = spec.title;
-
-            // Guess user account from the file/suite title
             const fileTitle = suite.title || '';
             const user = fileTitle;
 
@@ -93,7 +116,12 @@ async function loadDashboard() {
               failed++;
               byBrowser[browser].failed++;
               byUser[user].failed++;
-              defects.push({ title, browser, status });
+
+              const testId = extractTestId(title);
+              const priority = priorityMap[testId] || 'Unknown';
+              byPriority[priority] = (byPriority[priority] || 0) + 1;
+
+              defects.push({ title, browser, status, priority });
             }
           }
         }
@@ -119,9 +147,17 @@ async function loadDashboard() {
     browserBody.innerHTML += `<tr><td>${browser}</td><td>${s.total}</td><td class="status-passed">${s.passed}</td><td class="status-failed">${s.failed}</td></tr>`;
   }
 
+  const priorityOrder = ['High', 'Medium', 'Low', 'Unknown'];
+  const priorityBody = document.querySelector('#priorityTable tbody');
+  for (const priority of priorityOrder) {
+    if (byPriority[priority]) {
+      priorityBody.innerHTML += `<tr><td>${priority}</td><td class="status-failed">${byPriority[priority]}</td></tr>`;
+    }
+  }
+
   const defectBody = document.querySelector('#defectTable tbody');
   for (const d of defects) {
-    defectBody.innerHTML += `<tr><td>${d.title}</td><td>${d.browser}</td><td class="status-failed">${d.status}</td></tr>`;
+    defectBody.innerHTML += `<tr><td>${d.title}</td><td>${d.browser}</td><td>${d.priority}</td><td class="status-failed">${d.status}</td></tr>`;
   }
 }
 loadDashboard().catch(err => {
