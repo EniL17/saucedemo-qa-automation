@@ -16,7 +16,7 @@ test.describe('Checkout - standard_user', () => {
     await inventoryPage.goToCart();
   });
 
-  test('TC-STD-14: complete checkout happy path', async ({ page }) => {
+  test('TC-STD-14: complete checkout happy path @smoke', async ({ page }) => {
     const checkoutPage = new CheckoutPage(page);
 
     await page.locator('[data-test="checkout"]').click();
@@ -60,7 +60,7 @@ test.describe('Checkout - standard_user', () => {
     await expect(error).toBeVisible();
   });
 
- test('TC-STD-21: checkout fields should validate input format', async ({ page }) => {
+ test('TC-STD-21: checkout fields should validate input format @regression', async ({ page }) => {
     const checkoutPage = new CheckoutPage(page);
 
     await page.locator('[data-test="checkout"]').click();
@@ -86,5 +86,5 @@ test.describe('Checkout - standard_user', () => {
 
     expect(download.suggestedFilename()).toContain('.pdf'); // expected to pass — real, working feature
   });
-  
+
 });

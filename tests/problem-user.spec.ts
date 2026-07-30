@@ -3,6 +3,7 @@ import { LoginPage } from '../pages/LoginPage';
 import { InventoryPage } from '../pages/InventoryPage';
 import { CheckoutPage } from '../pages/CheckoutPage';
 import { users } from '../data/users';
+import { allProductSlugs } from '../data/products';
 
 test.describe('problem_user', () => {
 
@@ -12,20 +13,16 @@ test.describe('problem_user', () => {
     await loginPage.login(users.problem.username, users.problem.password);
   });
 
-  test('TC-PRB-03: all 6 products should be addable to cart', async ({ page }) => {
+  test('TC-PRB-03: all 6 products should be addable to cart @regression', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
-    const productSlugs = [
-      'sauce-labs-backpack', 'sauce-labs-bike-light', 'sauce-labs-bolt-t-shirt',
-      'sauce-labs-fleece-jacket', 'sauce-labs-onesie', 'test.allthethings()-t-shirt-(red)',
-    ];
-    for (const slug of productSlugs) {
+    for (const slug of allProductSlugs) {
       await inventoryPage.addToCart(slug).click();
     }
 
     await expect(inventoryPage.cartLink).toHaveText('6'); // correct expected — currently fails, known defect
   });
 
-  test('TC-PRB-04: Remove should clear the item from the cart (catalog view)', async ({ page }) => {
+  test('TC-PRB-04: Remove should clear the item from the cart (catalog view) @regression', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
     await inventoryPage.addToCart('sauce-labs-backpack').click();
     await inventoryPage.removeFromCart('sauce-labs-backpack').click();
@@ -42,7 +39,7 @@ test.describe('problem_user', () => {
     await expect(inventoryPage.cartLink).toHaveText(''); // expected to pass — no bug here
   });
 
-  test('TC-PRB-06: sorting should reorder the product list', async ({ page }) => {
+  test('TC-PRB-06: sorting should reorder the product list @regression', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
     const firstItem = page.locator('[data-test="inventory-item-name"]').first();
 
@@ -64,7 +61,7 @@ test.describe('problem_user', () => {
     await expect(checkoutPage.firstNameInput).toHaveValue('Anil'); // expected to pass — no bug here
   });
 
-  test('TC-PRB-08: First Name field should retain its value after Last Name is typed', async ({ page }) => {
+  test('TC-PRB-08: First Name field should retain its value after Last Name is typed @regression', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
     const checkoutPage = new CheckoutPage(page);
     await inventoryPage.addToCart('sauce-labs-backpack').click();
@@ -88,7 +85,7 @@ test.describe('problem_user', () => {
     await expect(checkoutPage.postalCodeInput).toHaveValue('44135'); // expected to pass — no bug here
   });
 
-  test('TC-PRB-10: checkout should proceed to overview with valid data', async ({ page }) => {
+  test('TC-PRB-10: checkout should proceed to overview with valid data @regression', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
     const checkoutPage = new CheckoutPage(page);
     await inventoryPage.addToCart('sauce-labs-backpack').click();

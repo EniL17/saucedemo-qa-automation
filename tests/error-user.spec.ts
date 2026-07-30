@@ -3,6 +3,7 @@ import { LoginPage } from '../pages/LoginPage';
 import { InventoryPage } from '../pages/InventoryPage';
 import { CheckoutPage } from '../pages/CheckoutPage';
 import { users } from '../data/users';
+import { allProductSlugs } from '../data/products';
 
 test.describe('error_user', () => {
 
@@ -12,7 +13,7 @@ test.describe('error_user', () => {
     await loginPage.login(users.error.username, users.error.password);
   });
 
-  test('TC-ERR-02: sorting should reorder without errors', async ({ page }) => {
+  test('TC-ERR-02: sorting should reorder without errors @regression', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
 
     let dialogMessage = '';
@@ -27,20 +28,16 @@ test.describe('error_user', () => {
     expect(dialogMessage).toBe(''); // correct expected — no alert should appear; currently fails, known defect
   });
 
-  test('TC-ERR-03: all 6 products should be addable to cart', async ({ page }) => {
+  test('TC-ERR-03: all 6 products should be addable to cart @regression', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
-    const productSlugs = [
-      'sauce-labs-backpack', 'sauce-labs-bike-light', 'sauce-labs-bolt-t-shirt',
-      'sauce-labs-fleece-jacket', 'sauce-labs-onesie', 'test.allthethings()-t-shirt-(red)',
-    ];
-    for (const slug of productSlugs) {
+    for (const slug of allProductSlugs) {
       await inventoryPage.addToCart(slug).click();
     }
 
     await expect(inventoryPage.cartLink).toHaveText('6'); // correct expected — known defect
   });
 
-  test('TC-ERR-06: all three checkout fields should accept text input', async ({ page }) => {
+  test('TC-ERR-06: all three checkout fields should accept text input @regression', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
     const checkoutPage = new CheckoutPage(page);
     await inventoryPage.addToCart('sauce-labs-backpack').click();
@@ -65,7 +62,7 @@ test.describe('error_user', () => {
     await expect(page).toHaveURL(/checkout-step-two\.html/); // expected to pass — no bug here
   });
 
-  test('TC-ERR-08: Finish should complete the order', async ({ page }) => {
+  test('TC-ERR-08: Finish should complete the order @regression', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
     const checkoutPage = new CheckoutPage(page);
     await inventoryPage.addToCart('sauce-labs-backpack').click();

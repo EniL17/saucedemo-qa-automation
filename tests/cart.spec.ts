@@ -22,7 +22,7 @@ test.describe('Cart - standard_user', () => {
     await expect(inventoryPage.cartLink).toHaveText(''); // badge disappears entirely when cart is empty
   });
 
-  test('TC-STD-13: remove product from cart page', async ({ page }) => {
+  test('TC-STD-13: remove product from cart page @smoke', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
     const cartPage = new CartPage(page);
 

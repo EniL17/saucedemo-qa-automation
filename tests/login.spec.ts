@@ -4,7 +4,7 @@ import { users } from '../data/users';
 
 test.describe('Login - standard_user', () => {
 
-  test('TC-STD-01: valid login redirects to inventory page', async ({ page }) => {
+  test('TC-STD-01: valid login redirects to inventory page @smoke', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
     await loginPage.login(users.standard.username, users.standard.password);

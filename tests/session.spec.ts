@@ -11,18 +11,23 @@ test.describe('Session & Menu - standard_user', () => {
     await loginPage.login(users.standard.username, users.standard.password);
   });
 
-  test('TC-STD-16: logout ends session and blocks back-navigation', async ({ page }) => {
+test('TC-STD-16: logout ends session and blocks back-navigation', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
     await inventoryPage.openMenu();
-    await page.locator('[data-test="logout-sidebar-link"]').click();
+
+    // Confirm the menu genuinely opened before looking for logout specifically
+    await inventoryPage.resetAppStateLink.waitFor({ state: 'visible', timeout: 15000 });
+
+    const logoutLink = page.locator('[data-test="logout-sidebar-link"]');
+    await logoutLink.click();
 
     await expect(page).toHaveURL('https://www.saucedemo.com/');
 
     await page.goBack();
     await expect(page).toHaveURL('https://www.saucedemo.com/');
   });
-
-  test('TC-STD-18: Reset App State should revert Remove button to Add to cart', async ({ page }) => {
+  
+  test('TC-STD-18: Reset App State should revert Remove button to Add to cart @regression', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
     await inventoryPage.addToCart('sauce-labs-backpack').click();
     await inventoryPage.resetAppState();

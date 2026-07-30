@@ -6,7 +6,7 @@ import { users } from '../data/users';
 
 test.describe('performance_glitch_user', () => {
 
-  test('TC-PFM-01: login should complete without significant delay', async ({ page }) => {
+  test('TC-PFM-01: login should complete without significant delay @regression', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
 

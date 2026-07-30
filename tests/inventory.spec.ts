@@ -43,7 +43,7 @@ test.describe('Inventory - standard_user', () => {
     await expect(firstPrice).toHaveText('$49.99');
   });
 
-  test('TC-STD-11: add product to cart from catalog view', async ({ page }) => {
+  test('TC-STD-11: add product to cart from catalog view @smoke', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
     await inventoryPage.addToCart('sauce-labs-backpack').click();
 

@@ -11,7 +11,7 @@ test.describe('visual_user', () => {
     await loginPage.login(users.visual.username, users.visual.password);
   });
 
-  test('TC-VIS-10: sorting should reorder correctly for each option', async ({ page }) => {
+  test('TC-VIS-10: sorting should reorder correctly for each option @regression', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
     const firstItem = page.locator('[data-test="inventory-item-name"]').first();
     const firstPrice = page.locator('[data-test="inventory-item-price"]').first();
@@ -29,7 +29,7 @@ test.describe('visual_user', () => {
     await expect(firstPrice).toHaveText('$49.99'); // correct expected — known defect
   });
 
-  test('TC-VIS-11: product prices should stay consistent across page refreshes', async ({ page }) => {
+  test('TC-VIS-11: product prices should stay consistent across page refreshes @regression', async ({ page }) => {
     const priceLocator = page.locator('[data-test="inventory-item-price"]').first();
 
     const priceBefore = await priceLocator.textContent();
@@ -39,7 +39,7 @@ test.describe('visual_user', () => {
     expect(priceAfter).toBe(priceBefore); // correct expected — known defect (prices randomize on reload)
   });
 
-  test('TC-VIS-12: inventory page and detail page should show the same price', async ({ page }) => {
+  test('TC-VIS-12: inventory page and detail page should show the same price @regression', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
     const inventoryPrice = page.locator('[data-test="inventory-item-price"]').first();
 
