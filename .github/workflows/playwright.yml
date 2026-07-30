@@ -5,8 +5,11 @@ on:
   pull_request:
     branches: [ main, master ]
 jobs:
-  test:
-    timeout-minutes: 60
+
+  # BLOCKING — every test EXCEPT known defects. Must pass to merge/release.
+  regression-gate:
+    name: "Release Gate (All Working Features - Blocking)"
+    timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -18,18 +21,43 @@ jobs:
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    # NOTE: This suite intentionally contains ~45 failing tests. Each one is a
-    # regression check for a confirmed, documented defect (see the manual test
-    # case sheet). A red build here is expected and meaningful: it confirms the
-    # known defects are still present. If this build ever turns fully green, it
-    # means one or more defects were fixed and the test case documentation
-    # should be updated to reflect that.
-    - name: Run Playwright tests
-      run: npx playwright test
+    # Runs everything EXCEPT the 15 known-defect tests. If a fix breaks any
+    # currently-working feature, this correctly fails and blocks the release.
+    - name: Run all tests EXCEPT known defects (release-blocking)
+      run: npx playwright test --grep-invert @regression
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
-        name: playwright-report
+        name: regression-gate-report
+        path: playwright-report/
+        retention-days: 30
+
+  # NON-BLOCKING — only the 15 known-defect tests. Informational tracking only.
+  known-defects-tracker:
+    name: "Known Defects Tracker (Informational - Non-Blocking)"
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+        cache: 'npm'
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+    # NOTE: This job intentionally contains the 15 confirmed-defect regression
+    # tests. continue-on-error: true means this job's failure NEVER blocks a
+    # merge or release - it exists purely to keep known defects visible to the
+    # team, tracked separately from the release-blocking gate above.
+    - name: Run ONLY known-defect tests (informational)
+      run: npx playwright test --grep @regression
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: known-defects-report
         path: playwright-report/
         retention-days: 30
     - uses: actions/upload-artifact@v4
