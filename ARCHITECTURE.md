@@ -8,7 +8,7 @@ This document explains the *why* behind the automation project.
 
 ### Language: TypeScript
 
-Chosen over plain JavaScript for three reasons: it matches a claimed skill on the candidate's CV, so a working TypeScript project is direct evidence rather than an unverified line item; type safety catches mistakes (wrong argument, typo in a method name) while writing the code rather than at test-run time; and it is Playwright's own recommended default when scaffolding a new project. In a Page Object Model project specifically, the extra TypeScript syntax is minimal — mostly parameter and property type labels — so the cost is low relative to the benefit.
+I chose TypeScript over plain JavaScript for a few reasons. It catches mistakes while I'm writing the code — a wrong argument, a typo in a method name — instead of only finding out when I run the test. It's also Playwright's own recommended setup when you scaffold a new project, so it's the more standard, widely-used choice.
 
 ### Pattern: Page Object Model (POM)
 
@@ -16,7 +16,7 @@ One class per page of the application (`LoginPage`, `InventoryPage`, `CartPage`,
 
 ### Test data: centralized, not hardcoded
 
-`data/users.ts` holds all 6 seeded account credentials; `data/products.ts` holds the shared product identifier list used across multiple test files (originally duplicated between `problem-user.spec.ts` and `error-user.spec.ts`, refactored into a shared file after review — a concrete example of the "reusable components" requirement being actively applied, not just present at first-draft).
+`data/users.ts` holds all 6 seeded account credentials; `data/products.ts` holds the shared product identifier list used across multiple test files (originally duplicated between `problem-user.spec.ts` and `error-user.spec.ts`, refactored into a shared file after review — an example of the "reusable components" requirement).
 
 ### Reusable components
 
@@ -45,7 +45,7 @@ Every assertion in this suite checks what the application **should** do, never t
 41 Excel-documented cases plus 4 supporting checks (added during implementation for stronger coverage, e.g. verifying cart contents match exactly) = **45 automated scenarios**, executed across 3 browsers = **135 total test runs**.
 
 - **90 passing** — confirms correct, working behaviour
-- **45 failing** — each one a regression check for one of 15 confirmed, documented defects (14 originally + 1 discovered and consolidated during review: `TC-VIS-12`, which was reframed from "detail page is correct" to "inventory and detail page disagree" after further investigation)
+- **45 failing** — each one a regression check for one of 15 confirmed, documented defects.
 
 ---
 
@@ -75,8 +75,6 @@ Chosen as the bonus item over parallel execution (the assignment offers "paralle
 
 SauceDemo was investigated for a real, callable backend API using the browser's Network tab, with caching explicitly disabled to avoid false positives from stale cached requests (an initial check without disabling cache produced a misleading result — a stray cached request that did not reproduce once cache was properly cleared). Across login, cart, checkout, and PDF-receipt generation, no genuine backend API call was found; the PDF receipt itself is generated entirely client-side using the `react-pdf` JavaScript library, with no server round-trip.
 
-Given a suitable target with a real backend, the approach would be: use Playwright's built-in `request` context to call endpoints directly, assert on status codes and response bodies, and validate that data changes made via the API are correctly reflected in the UI — closing the loop between backend and frontend testing.
-
 ---
 
 ## 7. Known Flakiness — Investigated and Documented
@@ -93,7 +91,7 @@ This is a known, accepted trade-off: parallel execution provides significant spe
 
 - **Custom dashboard** (`dashboard/index.html`): reads Playwright's JSON output directly, showing pass/fail totals, per-user and per-browser breakdowns, and a defect breakdown by priority — built on top of the standard HTML report rather than replacing it.
 - **Husky pre-commit hook**: runs `@smoke` automatically before every commit; verified to both permit a passing commit and actively block a failing one, with the failure message and blocked commit confirmed directly in testing.
-- **Two-tier CI redesign**: see Section 4 — the strongest of the additional-improvement items, addressing a real architectural gap rather than adding a standalone feature.
+- **Two-tier CI redesign**: see Section 4 —addressing a real architectural gap rather than adding a standalone feature.
 
 **Considered but not built:** visual regression (pixel-level) testing for the `visual_user` cosmetic findings. A same-run comparison approach — capturing both `standard_user` and `visual_user` screenshots within a single test execution, rather than comparing against a stored baseline file — would avoid cross-environment rendering mismatches entirely (a real limitation identified during design: a baseline generated on one OS/rendering engine produces false failures when compared against a different one). Deprioritized in favor of the CI architecture work given the time available; a natural next step.
 
