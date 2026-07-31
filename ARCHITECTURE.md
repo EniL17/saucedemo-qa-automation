@@ -101,5 +101,4 @@ This is a known, accepted trade-off: parallel execution provides significant spe
 
 - No formal Product Owner/Business Analyst was available to confirm priority assignments; priority was set by the candidate based on business-risk reasoning (see Section 2), which in a real team would typically be confirmed with a BA.
 - "Automate selected test cases" was interpreted as automating a risk-based majority, not necessarily all documented cases — with explicit, stated reasoning for every case left manual.
-- Manual test documentation format: Excel, chosen from the assignment's explicitly allowed options, and consistent with a real-world tool already used by the candidate professionally.
-- Deadline and submission mechanism were confirmed directly with the assignment issuer rather than assumed.
+- Manual test documentation format: Excel, chosen from the assignment's explicitly allowed options.
