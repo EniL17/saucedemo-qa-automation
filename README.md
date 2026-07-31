@@ -161,4 +161,4 @@ saucedemo-qa-automation/
 
 ## Manual Test Documentation
 
-`SauceDemo_Test_Cases_Final.xlsx` documents all 76 test cases across all 6 seeded accounts: objective, preconditions, steps, expected result, actual result, priority, bug status, and automation decision for each case.
+`SauceDemo_Test_Cases.xlsx` documents all 76 test cases across all 6 seeded accounts: objective, preconditions, steps, expected result, actual result, priority, bug status, and automation decision for each case.
