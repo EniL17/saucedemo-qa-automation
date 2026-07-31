@@ -1,6 +1,6 @@
 # Architecture, Design Decisions, and Assumptions
 
-This document explains the *why* behind the automation project — the assignment explicitly asks for "a short architecture explanation and assumptions," so this covers both.
+This document explains the *why* behind the automation project.
 
 ---
 
