@@ -7,6 +7,7 @@ export class InventoryPage {
   readonly menuButton: Locator;
   readonly resetAppStateLink: Locator;
   readonly aboutLink: Locator;
+  readonly logoutLink: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -15,6 +16,7 @@ export class InventoryPage {
     this.menuButton = page.getByRole('button', { name: 'Open Menu' });
     this.resetAppStateLink = page.locator('[data-test="reset-sidebar-link"]');
     this.aboutLink = page.locator('[data-test="about-sidebar-link"]');
+    this.logoutLink = page.locator('[data-test="logout-sidebar-link"]');
   }
 
   // Dynamic selectors — one method handles ALL 6 products, instead of writing 6 separate ones.
@@ -47,6 +49,11 @@ export class InventoryPage {
   async resetAppState() {
     await this.openMenu();
     await this.resetAppStateLink.click();
+  }
+
+  async logout() {
+    await this.openMenu();
+    await this.logoutLink.click();
   }
 
   async goToCart() {

@@ -104,12 +104,10 @@ test.describe('problem_user', () => {
     await expect(page).toHaveURL(/checkout-step-two\.html/); // correct expected — currently fails, known defect
   });
 
-  test('TC-PRB-11: logout works normally', async ({ page }) => {
+test('TC-PRB-11: logout works normally', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
-    await inventoryPage.openMenu();
-    await page.locator('[data-test="logout-sidebar-link"]').click();
+    await inventoryPage.logout();
 
     await expect(page).toHaveURL('https://www.saucedemo.com/'); // expected to pass — no bug here
   });
-
 });

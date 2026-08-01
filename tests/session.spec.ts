@@ -20,8 +20,7 @@ test('TC-STD-16: logout ends session and blocks back-navigation', async ({ page 
     // Confirm the menu genuinely opened before looking for logout specifically
     await inventoryPage.resetAppStateLink.waitFor({ state: 'visible', timeout: 15000 });
 
-    const logoutLink = page.locator('[data-test="logout-sidebar-link"]');
-    await logoutLink.click();
+   await inventoryPage.logoutLink.click();
 
     await expect(page).toHaveURL('https://www.saucedemo.com/');
 
