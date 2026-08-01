@@ -32,7 +32,7 @@ Every assertion in this suite checks what the application **should** do, never t
 
 ## 2. Manual Test Case Documentation
 
-76 manual test cases are documented in `SauceDemo_Test_Cases_Final.xlsx`, covering all 6 seeded accounts (`standard_user`, `locked_out_user`, `problem_user`, `performance_glitch_user`, `error_user`, `visual_user`). Each case includes Test ID, User Profile, Objective, Preconditions, Test Steps, Expected Result, Actual Result, Bug Found (Y/N), Priority, and Automate decision.
+76 manual test cases are documented in `SauceDemo_Test_Cases.xlsx`, covering all 6 seeded accounts (`standard_user`, `locked_out_user`, `problem_user`, `performance_glitch_user`, `error_user`, `visual_user`). Each case includes Test ID, User Profile, Objective, Preconditions, Test Steps, Expected Result, Actual Result, Bug Found (Y/N), Priority, and Automate decision.
 
 **Priority basis:** business/revenue impact if the workflow were broken, independent of whether it turned out to actually be broken — High for login/checkout/cart entry points, Medium for supporting features, Low for cosmetic or peripheral checks. Priority assignments were audited for consistency across repeated patterns (e.g. Logout, About page, Reset App State) so the same type of check carries the same priority regardless of which account it was tested under.
 
