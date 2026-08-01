@@ -143,6 +143,8 @@ saucedemo-qa-automation/
 │   └── playwright.yml
 ├── playwright.config.ts       # Reporters, browsers, timeouts, tagging support
 ├── ARCHITECTURE.md
+├── Automation_Selection_Rationale.docx
+├── SauceDemo_Test_Cases.xlsx
 └── package.json
 ```
 
