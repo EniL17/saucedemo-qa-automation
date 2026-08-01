@@ -5,7 +5,7 @@ export class LoginPage {
   readonly usernameInput: Locator;
   readonly passwordInput: Locator;
   readonly loginButton: Locator;
-  readonly errorMessage: Locator;       // ⚠️ inferred selector, not yet directly verified
+  readonly errorMessage: Locator;
   readonly errorCloseButton: Locator;
 
   constructor(page: Page) {

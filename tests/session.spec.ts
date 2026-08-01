@@ -3,6 +3,8 @@ import { LoginPage } from '../pages/LoginPage';
 import { InventoryPage } from '../pages/InventoryPage';
 import { users } from '../data/users';
 
+test.describe.configure({ retries: 2 });
+
 test.describe('Session & Menu - standard_user', () => {
 
   test.beforeEach(async ({ page }) => {

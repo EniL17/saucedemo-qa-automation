@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
 import { InventoryPage } from '../pages/InventoryPage';
+import { CartPage } from '../pages/CartPage';
 import { CheckoutPage } from '../pages/CheckoutPage';
 import { users } from '../data/users';
 
@@ -25,10 +26,11 @@ test.describe('performance_glitch_user', () => {
     await loginPage.login(users.performanceGlitch.username, users.performanceGlitch.password);
 
     const inventoryPage = new InventoryPage(page);
+    const cartPage = new CartPage(page);
     const checkoutPage = new CheckoutPage(page);
     await inventoryPage.addToCart('sauce-labs-backpack').click();
     await inventoryPage.goToCart();
-    await page.locator('[data-test="checkout"]').click();
+    await cartPage.checkout();
     await checkoutPage.fillInfo('Anil', 'Biju', '44135');
     await checkoutPage.continueCheckout();
     await checkoutPage.finish();

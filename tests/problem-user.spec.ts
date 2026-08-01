@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
 import { InventoryPage } from '../pages/InventoryPage';
+import { CartPage } from '../pages/CartPage';
 import { CheckoutPage } from '../pages/CheckoutPage';
 import { users } from '../data/users';
 import { allProductSlugs } from '../data/products';
@@ -32,9 +33,10 @@ test.describe('problem_user', () => {
 
   test('TC-PRB-05: Remove works correctly from the cart page', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
+    const cartPage = new CartPage(page);
     await inventoryPage.addToCart('sauce-labs-backpack').click();
     await inventoryPage.goToCart();
-    await page.locator('[data-test="remove-sauce-labs-backpack"]').click();
+    await cartPage.removeFromCart('sauce-labs-backpack').click();
 
     await expect(inventoryPage.cartLink).toHaveText(''); // expected to pass — no bug here
   });
@@ -52,10 +54,11 @@ test.describe('problem_user', () => {
 
   test('TC-PRB-07: First Name field accepts text normally', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
+    const cartPage = new CartPage(page);
     const checkoutPage = new CheckoutPage(page);
     await inventoryPage.addToCart('sauce-labs-backpack').click();
     await inventoryPage.goToCart();
-    await page.locator('[data-test="checkout"]').click();
+    await cartPage.checkout();
 
     await checkoutPage.firstNameInput.fill('Anil');
     await expect(checkoutPage.firstNameInput).toHaveValue('Anil'); // expected to pass — no bug here
@@ -63,10 +66,11 @@ test.describe('problem_user', () => {
 
   test('TC-PRB-08: First Name field should retain its value after Last Name is typed @regression', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
+    const cartPage = new CartPage(page);
     const checkoutPage = new CheckoutPage(page);
     await inventoryPage.addToCart('sauce-labs-backpack').click();
     await inventoryPage.goToCart();
-    await page.locator('[data-test="checkout"]').click();
+    await cartPage.checkout();
 
     await checkoutPage.firstNameInput.fill('Anil');
     await checkoutPage.lastNameInput.fill('Biju');
@@ -76,10 +80,11 @@ test.describe('problem_user', () => {
 
   test('TC-PRB-09: Postal Code field accepts text normally', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
+    const cartPage = new CartPage(page);
     const checkoutPage = new CheckoutPage(page);
     await inventoryPage.addToCart('sauce-labs-backpack').click();
     await inventoryPage.goToCart();
-    await page.locator('[data-test="checkout"]').click();
+    await cartPage.checkout();
 
     await checkoutPage.postalCodeInput.fill('44135');
     await expect(checkoutPage.postalCodeInput).toHaveValue('44135'); // expected to pass — no bug here
@@ -87,10 +92,11 @@ test.describe('problem_user', () => {
 
   test('TC-PRB-10: checkout should proceed to overview with valid data @regression', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
+    const cartPage = new CartPage(page);
     const checkoutPage = new CheckoutPage(page);
     await inventoryPage.addToCart('sauce-labs-backpack').click();
     await inventoryPage.goToCart();
-    await page.locator('[data-test="checkout"]').click();
+    await cartPage.checkout();
 
     await checkoutPage.fillInfo('Anil', 'Biju', '44135');
     await checkoutPage.continueCheckout();

@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
 import { InventoryPage } from '../pages/InventoryPage';
+import { CartPage } from '../pages/CartPage';
 import { CheckoutPage } from '../pages/CheckoutPage';
 import { users } from '../data/users';
 
@@ -17,9 +18,10 @@ test.describe('Checkout - standard_user', () => {
   });
 
   test('TC-STD-14: complete checkout happy path @smoke', async ({ page }) => {
+    const cartPage = new CartPage(page);
     const checkoutPage = new CheckoutPage(page);
 
-    await page.locator('[data-test="checkout"]').click();
+    await cartPage.checkout();
     await checkoutPage.fillInfo('Anil', 'Biju', '44135');
     await checkoutPage.continueCheckout();
     await checkoutPage.finish();
@@ -28,9 +30,10 @@ test.describe('Checkout - standard_user', () => {
   });
 
   test('TC-STD-22: blocked when First Name is missing', async ({ page }) => {
+    const cartPage = new CartPage(page);
     const checkoutPage = new CheckoutPage(page);
 
-    await page.locator('[data-test="checkout"]').click();
+    await cartPage.checkout();
     await checkoutPage.fillInfo('', 'Biju', '44135');
     await checkoutPage.continueCheckout();
 
@@ -39,9 +42,10 @@ test.describe('Checkout - standard_user', () => {
   });
 
   test('TC-STD-22: blocked when Last Name is missing', async ({ page }) => {
+    const cartPage = new CartPage(page);
     const checkoutPage = new CheckoutPage(page);
 
-    await page.locator('[data-test="checkout"]').click();
+    await cartPage.checkout();
     await checkoutPage.fillInfo('Anil', '', '44135');
     await checkoutPage.continueCheckout();
 
@@ -50,9 +54,10 @@ test.describe('Checkout - standard_user', () => {
   });
 
   test('TC-STD-22: blocked when Postal Code is missing', async ({ page }) => {
+    const cartPage = new CartPage(page);
     const checkoutPage = new CheckoutPage(page);
 
-    await page.locator('[data-test="checkout"]').click();
+    await cartPage.checkout();
     await checkoutPage.fillInfo('Anil', 'Biju', '');
     await checkoutPage.continueCheckout();
 
@@ -60,10 +65,11 @@ test.describe('Checkout - standard_user', () => {
     await expect(error).toBeVisible();
   });
 
- test('TC-STD-21: checkout fields should validate input format @regression', async ({ page }) => {
+  test('TC-STD-21: checkout fields should validate input format @regression', async ({ page }) => {
+    const cartPage = new CartPage(page);
     const checkoutPage = new CheckoutPage(page);
 
-    await page.locator('[data-test="checkout"]').click();
+    await cartPage.checkout();
     await checkoutPage.fillInfo('an1l!@#', 'x_9$', '4444444-.@');
     await checkoutPage.continueCheckout();
 
@@ -73,9 +79,10 @@ test.describe('Checkout - standard_user', () => {
   });
 
   test('TC-STD-15: PDF receipt can be generated after checkout', async ({ page }) => {
+    const cartPage = new CartPage(page);
     const checkoutPage = new CheckoutPage(page);
 
-    await page.locator('[data-test="checkout"]').click();
+    await cartPage.checkout();
     await checkoutPage.fillInfo('Anil', 'Biju', '44135');
     await checkoutPage.continueCheckout();
     await checkoutPage.finish();

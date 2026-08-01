@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
 import { InventoryPage } from '../pages/InventoryPage';
+import { CartPage } from '../pages/CartPage';
 import { CheckoutPage } from '../pages/CheckoutPage';
 import { users } from '../data/users';
 import { allProductSlugs } from '../data/products';
@@ -39,10 +40,11 @@ test.describe('error_user', () => {
 
   test('TC-ERR-06: all three checkout fields should accept text input @regression', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
+    const cartPage = new CartPage(page);
     const checkoutPage = new CheckoutPage(page);
     await inventoryPage.addToCart('sauce-labs-backpack').click();
     await inventoryPage.goToCart();
-    await page.locator('[data-test="checkout"]').click();
+    await cartPage.checkout();
 
     await checkoutPage.fillInfo('Anil', 'Biju', '44135');
 
@@ -51,10 +53,11 @@ test.describe('error_user', () => {
 
   test('TC-ERR-07: checkout should proceed to overview with valid data', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
+    const cartPage = new CartPage(page);
     const checkoutPage = new CheckoutPage(page);
     await inventoryPage.addToCart('sauce-labs-backpack').click();
     await inventoryPage.goToCart();
-    await page.locator('[data-test="checkout"]').click();
+    await cartPage.checkout();
 
     await checkoutPage.fillInfo('Anil', 'Biju', '44135');
     await checkoutPage.continueCheckout();
@@ -64,10 +67,11 @@ test.describe('error_user', () => {
 
   test('TC-ERR-08: Finish should complete the order @regression', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
+    const cartPage = new CartPage(page);
     const checkoutPage = new CheckoutPage(page);
     await inventoryPage.addToCart('sauce-labs-backpack').click();
     await inventoryPage.goToCart();
-    await page.locator('[data-test="checkout"]').click();
+    await cartPage.checkout();
     await checkoutPage.fillInfo('Anil', 'Biju', '44135');
     await checkoutPage.continueCheckout();
     await checkoutPage.finish();
