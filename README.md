@@ -15,7 +15,6 @@ See [`ARCHITECTURE.md`](./ARCHITECTURE.md) for design decisions and assumptions,
 
 - [Node.js](https://nodejs.org/) (LTS version recommended)
 - npm (bundled with Node.js)
-- [Docker](https://www.docker.com/) is **not** required for this project
 
 ## Setup
 
@@ -144,6 +143,8 @@ saucedemo-qa-automation/
 │   └── playwright.yml
 ├── playwright.config.ts       # Reporters, browsers, timeouts, tagging support
 ├── ARCHITECTURE.md
+├── Automation_Selection_Rationale.docx
+├── SauceDemo_Test_Cases.xlsx
 └── package.json
 ```
 
@@ -161,4 +162,4 @@ saucedemo-qa-automation/
 
 ## Manual Test Documentation
 
-`SauceDemo_Test_Cases.xlsx` documents all 76 test cases across all 6 seeded accounts: objective, preconditions, steps, expected result, actual result, priority, bug status, and automation decision for each case.
+[`SauceDemo_Test_Cases.xlsx`](./SauceDemo_Test_Cases.xlsx) documents all 76 test cases across all 6 seeded accounts: objective, preconditions, steps, expected result, actual result, priority, bug status, and automation decision for each case.
