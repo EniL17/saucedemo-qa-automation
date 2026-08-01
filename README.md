@@ -15,7 +15,6 @@ See [`ARCHITECTURE.md`](./ARCHITECTURE.md) for design decisions and assumptions,
 
 - [Node.js](https://nodejs.org/) (LTS version recommended)
 - npm (bundled with Node.js)
-- [Docker](https://www.docker.com/) is **not** required for this project
 
 ## Setup
 
